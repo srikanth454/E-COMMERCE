@@ -47,6 +47,37 @@ Environment variables for launch (optional):
 | `INSTANCE_TYPE` | `t2.micro` |
 | `KEY_NAME` | `ec2-keys` |
 
+## Local Kubernetes (KIND)
+
+Single-node cluster on your machine (requires [Docker](https://www.docker.com/) and [kind](https://kind.sigs.k8s.io/)):
+
+```bash
+bash k8s/create-kind-cluster.sh
+# or
+kind create cluster --config k8s/kind-config.yaml --wait 10m
+```
+
+| Command | Description |
+|---------|-------------|
+| `kubectl get nodes` | Should show 1 node `Ready` |
+| `kind delete cluster --name ecommerce` | Remove the cluster |
+
+Context: `kind-ecommerce`
+
+### Deploy app on Kubernetes (2 replicas)
+
+```bash
+bash k8s/deploy-k8s.sh
+```
+
+| Resource | Name |
+|----------|------|
+| Deployment | `ecommerce-app` (2 replicas) |
+| Service | `ecommerce-service` (ClusterIP) |
+| Ingress | `http://localhost/` |
+
+Requires port **80** mapped on the KIND node (see `k8s/kind-config.yaml`). If Ingress is unreachable, recreate the cluster with that config.
+
 ## Tech Stack
 
 - Python 3
