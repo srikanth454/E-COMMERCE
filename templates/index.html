@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Shop - ShopEasy{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Welcome to ShopEasy</h1>
+    <p>Browse products and place orders. Total orders so far: <strong>{{ order_count }}</strong></p>
+</section>
+
+<section class="products-grid">
+    {% for product in products %}
+    <article class="product-card">
+        <div class="product-icon product-{{ product.image }}"></div>
+        <h2>{{ product.name }}</h2>
+        <p class="price">${{ "%.2f"|format(product.price) }}</p>
+        <form action="{{ url_for('place_order', product_id=product.id) }}" method="post" class="order-form">
+            <label for="qty-{{ product.id }}">Qty</label>
+            <input type="number" id="qty-{{ product.id }}" name="quantity" value="1" min="1" max="99">
+            <button type="submit" class="btn btn-primary">Order Now</button>
+        </form>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

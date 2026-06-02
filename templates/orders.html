@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Orders - ShopEasy{% endblock %}
+
+{% block content %}
+<section class="orders-header">
+    <h1>Orders</h1>
+    <div class="stats">
+        <div class="stat-card">
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value">{{ order_count }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Revenue</span>
+            <span class="stat-value">${{ "%.2f"|format(total_revenue) }}</span>
+        </div>
+    </div>
+</section>
+
+{% if orders %}
+<table class="orders-table">
+    <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.product_name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>${{ "%.2f"|format(order.unit_price) }}</td>
+            <td>${{ "%.2f"|format(order.total) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No orders yet. <a href="{{ url_for('home') }}">Start shopping</a></p>
+</div>
+{% endif %}
+
+<p class="back-link"><a href="{{ url_for('home') }}">&larr; Back to shop</a></p>
+{% endblock %}
