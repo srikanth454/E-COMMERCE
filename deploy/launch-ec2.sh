@@ -42,12 +42,23 @@ else
   echo "Using existing security group: ${SG_ID}"
 fi
 
+if command -v base64 >/dev/null 2>&1; then
+  if base64 --help 2>&1 | grep -q wrap; then
+    USERDATA_B64=$(base64 -w 0 "$USERDATA_FILE")
+  else
+    USERDATA_B64=$(base64 "$USERDATA_FILE" | tr -d '\n')
+  fi
+else
+  echo "base64 command not found" >&2
+  exit 1
+fi
+
 INSTANCE_ID=$(aws ec2 run-instances --region "$REGION" \
   --image-id "$AMI_ID" \
   --instance-type "$INSTANCE_TYPE" \
   --key-name "$KEY_NAME" \
   --security-group-ids "$SG_ID" \
-  --user-data "file://${USERDATA_FILE}" \
+  --user-data "$USERDATA_B64" \
   --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]" \
   --query "Instances[0].InstanceId" --output text)
 
